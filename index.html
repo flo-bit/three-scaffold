@@ -6,32 +6,20 @@
       content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
     />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.148.0/three.min.js"></script>
-
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.9/dat.gui.min.js"
-      integrity="sha512-WoO4Ih0CDOSLYafy22wZD/mcJ7k0ESLqtQsFa6zFKnEUrbtuGU+GkLtVhgt93xa2qewG5gKEC6CWlN8OaCTSVg=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    ></script>
   </head>
-
-  <body style="overflow: hidden; background-color: rgb(0, 0, 0)">
+  <body style="overflow: hidden">
     <script>
       class THREE_SCAFFOLD {
         constructor() {
+          let w = window.innerWidth,
+            h = window.innerHeight;
           this.scene = new THREE.Scene();
-          this.camera = new THREE.PerspectiveCamera(
-            75,
-            window.innerWidth / window.innerHeight
-          );
-
-          let background = 0x232323;
-          this.scene.background = new THREE.Color(background);
-
+          this.camera = new THREE.PerspectiveCamera(75, w / h);
+          this.scene.background = new THREE.Color(0x232323);
           this.scene.add(this.camera);
-          this.renderer = new THREE.WebGLRenderer();
-          this.renderer.setSize(window.innerWidth, window.innerHeight);
 
+          this.renderer = new THREE.WebGLRenderer();
+          this.renderer.setSize(w, h);
           let d = this.renderer.domElement;
           d.style.position = "absolute";
           d.style.left = "0px";
@@ -46,7 +34,6 @@
           this.lights = {};
           this.lights.ambi = new THREE.AmbientLight(0xffffff, 0.2);
           this.scene.add(this.lights.ambi);
-
           this.lights.dir = new THREE.DirectionalLight(0xffffff, 1.0);
           this.lights.dir.position.set(-0.8, 0.5, 0.7);
           this.scene.add(this.lights.dir);
@@ -58,24 +45,28 @@
         }
 
         setupScene() {
-          let geo = new THREE.IcosahedronGeometry(1, 1);
-
-          let mat = new THREE.MeshStandardMaterial({ flatShading: true });
-
-          this.sphere = new THREE.Mesh(geo, mat);
+          /* setup your scene here */
+          /* START */
+          this.sphere = new THREE.Mesh(
+            new THREE.IcosahedronGeometry(1, 1),
+            new THREE.MeshStandardMaterial({ flatShading: true })
+          );
           this.sphere.position.z = -2;
           this.scene.add(this.sphere);
+          /* END */
         }
-
         animate() {
           requestAnimationFrame(this.animate.bind(this));
-
           let delta = this.clock.getDelta();
           let total = this.clock.getElapsedTime();
 
           /* Update your scene here */
-          this.sphere.rotation.y += this.keys[" "] != true ? delta * 0.1 : 0;
-          this.sphere.rotation.x += this.keys[" "] != true ? delta * 0.213 : 0;
+          /* START */
+          if (this.keys[" "] != true) {
+            this.sphere.rotation.y += delta * 0.1;
+            this.sphere.rotation.x += delta * 0.213;
+          }
+          /* END */
 
           this.renderer.render(this.scene, this.camera);
         }
@@ -83,19 +74,15 @@
         windowResized() {
           this.camera.aspect = window.innerWidth / window.innerHeight;
           this.camera.updateProjectionMatrix();
-
           this.renderer.setSize(window.innerWidth, window.innerHeight);
         }
-
         keyDown(event) {
           this.keys[event.key] = true;
         }
-
         keyUp(event) {
           this.keys[event.key] = false;
         }
       }
-
       let app = new THREE_SCAFFOLD();
     </script>
   </body>
